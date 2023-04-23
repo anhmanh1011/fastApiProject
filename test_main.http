@@ -1,0 +1,13 @@
+# Test your FastAPI endpoints
+
+GET http://127.0.0.1:8000/
+Accept: application/json
+
+###
+
+GET http://127.0.0.1:8000/start?api_id=28921419&api_hash=8aca63a102fec741ebf418074c070499&phone=84913618725
+Accept: application/json
+
+###
+GET http://127.0.0.1:8000/appr?code=46880
+Accept: application/json
