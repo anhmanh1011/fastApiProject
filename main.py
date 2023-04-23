@@ -78,7 +78,7 @@ async def forward_message_toChat(client: TelegramClient, str_arr_channel: str):
 
 
 @app.get("/appr")
-async def say_hello(code: str, background_tasks: BackgroundTasks):
+async def say_hello(code: str):
     global client
     await client.sign_in(code=code)
     user = await client.get_input_entity('me')
