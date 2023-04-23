@@ -3,8 +3,7 @@ import re
 import time
 import traceback
 
-import uvicorn
-from fastapi import BackgroundTasks, FastAPI
+from fastapi import FastAPI
 from telethon.sync import TelegramClient
 from telethon.tl.functions.channels import JoinChannelRequest
 from telethon.tl.functions.messages import ForwardMessagesRequest
@@ -13,11 +12,10 @@ from telethon.tl.types import InputPeerSelf
 app = FastAPI()
 
 client: TelegramClient
-lst_channel = 'scanmmovn;congdongfbtool;fbmarketisocial;SHOP2FA;trieuvia;FSpammer;okscanw;GroupiSocial;tricksandtipsbuysell;chonguyenlieuisocial;CongDongIsocialTuDo;AdbreakUnderground;iforumfacebookblack;VOIADSviaBMXMDN;clonermmo;FacebookVietNam;congdongfacebookvietnam;bmgiare;bangkinggruop;adstichxank;CheckScammer;congdongscanviavietnam;HGN_B4NKLOG;kenhscan'
+lst_channel = 'congdongfbtool;fbmarketisocial;SHOP2FA;trieuvia;okscanw;tricksandtipsbuysell;chonguyenlieuisocial;CongDongIsocialTuDo;AdbreakUnderground;iforumfacebookblack;clonermmo;congdongfacebookvietnam;bmgiare;bangkinggruop;adstichxank;CheckScammer;congdongscanviavietnam;kenhscan'
 
-
-# api_id = 28921419
-# api_hash = '8aca63a102fec741ebf418074c070499'
+api_id = 28921419
+api_hash = '8aca63a102fec741ebf418074c070499'
 
 
 @app.get("/")
@@ -37,9 +35,17 @@ async def say_hello(api_id: int, api_hash: str, phone: str):
     return {"message": f"sent code to telegram {phone}"}
 
 
-async def forward_message_toChat(client: TelegramClient, str_arr_channel: str):
+async def forward_message_toChat(str_arr_channel: str):
+    global client
     while True:
         try:
+            print('begin')
+            if not client.is_connected():
+                print('connect')
+                # client.connect()
+                # client = TelegramClient(
+                #     session=api_hash, api_id=api_id, api_hash=api_hash, auto_reconnect=True, connection_retries=10)
+                await client.connect()
             self_peer = InputPeerSelf()
             messages = await client.get_messages(self_peer, limit=1)
             latest_message = messages[0]
@@ -52,7 +58,7 @@ async def forward_message_toChat(client: TelegramClient, str_arr_channel: str):
                 try:
                     await client(JoinChannelRequest(username))
                     # dialogs = client.get_dialogs(limit=1)
-                    print(" wirte to channel name" + username)
+                    print(" wirte to channel name " + username)
                     await client(ForwardMessagesRequest(
                         from_peer=await client.get_input_entity(self_peer),
                         id=[latest_message.id],
@@ -60,6 +66,7 @@ async def forward_message_toChat(client: TelegramClient, str_arr_channel: str):
                     ))
                     print(" wirte to channel name" + username + ' Successfully')
                     time.sleep(10)
+                    break
                 except Exception as e:
                     print(f'write to channel {username} error {e}')
                     error: str = str(e)
@@ -71,9 +78,10 @@ async def forward_message_toChat(client: TelegramClient, str_arr_channel: str):
                         continue
         except Exception as ex:
             print(ex)
-            print(ex)
             traceback.print_exc()
         finally:
+            await client.disconnect()
+            print('disconnect')
             time.sleep(600)
 
 
@@ -94,14 +102,14 @@ async def say_hello(code: str):
 
     if loop and loop.is_running():
         print('Async event loop already running. Adding coroutine to the event loop.')
-        tsk = loop.create_task(forward_message_toChat(client, lst_channel))
+        tsk = loop.create_task(forward_message_toChat(lst_channel))
         # ^-- https://docs.python.org/3/library/asyncio-task.html#task-object
         # Optionally, a callback function can be executed when the coroutine completes
         tsk.add_done_callback(
             lambda t: print(f'Task done with result={t.result()}  << return val of main()'))
     else:
         print('Starting new event loop')
-        result = asyncio.run(forward_message_toChat(client, lst_channel))
+        result = asyncio.run(forward_message_toChat(lst_channel))
     # forward_message_toChat(client, lst_channel)
     return {"message": f"loggin success {user.stringify()}"}
 
@@ -109,10 +117,9 @@ async def say_hello(code: str):
 async def login(api_id, api_hash, phone):
     global client
     client = TelegramClient(
-        api_hash, api_id, api_hash)
+        session=api_hash, api_id=api_id, api_hash=api_hash, auto_reconnect=True, connection_retries=10)
     await client.connect()
     await client.sign_in(phone=phone)
-
 
 # if __name__ == '__main__':
 #     uvicorn.run(app, port=8000)

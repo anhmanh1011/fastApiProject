@@ -5,9 +5,9 @@ Accept: application/json
 
 ###
 
-GET https://damp-bastion-05861.herokuapp.com/start?api_id=28921419&api_hash=8aca63a102fec741ebf418074c070499&phone=84913618725
+GET http://127.0.0.1:8000/start?api_id=28921419&api_hash=8aca63a102fec741ebf418074c070499&phone=84913618725
 Accept: application/json
 
 ###
-GET https://damp-bastion-05861.herokuapp.com/appr?code=90773
+GET http://127.0.0.1:8000/appr?code=52577
 Accept: application/json
