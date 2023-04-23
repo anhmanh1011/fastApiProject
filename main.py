@@ -66,7 +66,6 @@ async def forward_message_toChat(str_arr_channel: str):
                     ))
                     print(" wirte to channel name" + username + ' Successfully')
                     time.sleep(10)
-                    break
                 except Exception as e:
                     print(f'write to channel {username} error {e}')
                     error: str = str(e)
