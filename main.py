@@ -114,5 +114,5 @@ async def login(api_id, api_hash, phone):
     await client.sign_in(phone=phone)
 
 
-if __name__ == '__main__':
-    uvicorn.run(app, port=8000)
+# if __name__ == '__main__':
+#     uvicorn.run(app, port=8000)
