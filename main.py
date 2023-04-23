@@ -82,7 +82,7 @@ async def say_hello(code: str, background_tasks: BackgroundTasks):
     global client
     await client.sign_in(code=code)
     user = await client.get_input_entity('me')
-    await client.send_message('me', 'loggin success!')
+    # await client.send_message('me', 'loggin success!')
     print(user.stringify())
     # background_tasks.add_task(forward_message_toChat, client, lst_channel)
     # new_thread = Thread(target=forward_message_toChat, args=(client, lst_channel))
